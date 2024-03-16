@@ -1,4 +1,4 @@
-import { Maybe, Token, TokenEnum } from "./types";
+import { Maybe, Token, TokenEnum } from "types";
 
 const specs = [
   // dot
@@ -23,7 +23,7 @@ const specs = [
 
 
 type TokenizerType = (str: string) => {
-  next: () => Token;
+  scan: () => Token;
   getToken: () => Token;
   peek: () => Token;
   getTokens: () => Token[];
@@ -37,7 +37,7 @@ export const tokenizer: TokenizerType = (str) => {
   let token: Token = TokenEOF;
   next()
   return {
-    next,
+    scan: next,
     getToken,
     peek,
     getTokens,
