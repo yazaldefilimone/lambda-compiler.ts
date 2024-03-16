@@ -5,44 +5,47 @@ export enum Kind {
   Program = "Program",
 }
 
+// include generic type
 export enum KindType {
   Int = "Int",
   Bool = "Bool",
   Float = "Float",
   Function = "Function",
+  Generic = "Generic",
 }
 type FreeVariableType = string;
 type BoundVariableType = `_${string}`;
 
-type BaseType = {
-  kind: KindType.Int | KindType.Bool | KindType.Float,
+export type BaseType = {
+  kind: KindType.Int | KindType.Bool | KindType.Float | KindType.Generic,
   value: string;
 }
 
 
-type FunctionType = {
+export type FunctionType = {
   kind: KindType.Function;
-  argument: BaseType;
-  result: BaseType;
+  argument: BaseType | FunctionType;
+  result: BaseType | FunctionType;
 }
 export type VariableType = {
   kind: Kind.Variable;
   name: FreeVariableType;
-  t: BaseType;
+  t: Maybe<BaseType | FunctionType>;
 }
-type AbstractionType = {
+export type AbstractionType = {
   kind: Kind.Abstraction;
-  variable: BoundVariableType;
+  variable: VariableType;
   body: TermType;
-  t: FunctionType;
+  t: Maybe<FunctionType>;
 }
-type ApplicationType = {
+export type ApplicationType = {
   kind: Kind.Application;
   left: TermType;
   right: TermType;
-  t: BaseType | FunctionType;
+  t: Maybe<BaseType | FunctionType>;
 }
 
+export type Type = BaseType | FunctionType;
 export type TermType = VariableType | AbstractionType | ApplicationType;
 
 
@@ -60,6 +63,7 @@ export enum TokenEnum {
   RParen = "RParen",
   EOF = "EOF",
   Colon = "Colon",
+  Arrow = "Arrow",
 }
 
 export type Token = {
