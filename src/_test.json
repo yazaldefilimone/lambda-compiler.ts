@@ -1,0 +1,233 @@
+{
+  "kind": "Program",
+  "body": [
+    {
+      "kind": "Abstraction",
+      "variable": {
+        "kind": "Variable",
+        "name": "x",
+        "t": {
+          "kind": "ArrowType",
+          "from": {
+            "kind": "ArrowType",
+            "from": {
+              "kind": "BoolType"
+            },
+            "to": {
+              "kind": "GenericType",
+              "name": "a"
+            }
+          },
+          "to": {
+            "kind": "ArrowType",
+            "from": {
+              "kind": "ArrowType",
+              "from": {
+                "kind": "FloatType"
+              },
+              "to": {
+                "kind": "GenericType",
+                "name": "b"
+              }
+            },
+            "to": {
+              "kind": "GenericType",
+              "name": "c"
+            }
+          }
+        }
+      },
+      "body": {
+        "kind": "Abstraction",
+        "variable": {
+          "kind": "Variable",
+          "name": "y",
+          "t": {
+            "kind": "ArrowType",
+            "from": {
+              "kind": "BoolType"
+            },
+            "to": {
+              "kind": "GenericType",
+              "name": "a"
+            }
+          }
+        },
+        "body": {
+          "kind": "Abstraction",
+          "variable": {
+            "kind": "Variable",
+            "name": "z",
+            "t": {
+              "kind": "ArrowType",
+              "from": {
+                "kind": "FloatType"
+              },
+              "to": {
+                "kind": "GenericType",
+                "name": "b"
+              }
+            }
+          },
+          "body": {
+            "kind": "Application",
+            "left": {
+              "kind": "Application",
+              "left": {
+                "kind": "Application",
+                "left": {
+                  "kind": "Variable",
+                  "name": "x",
+                  "t": {
+                    "kind": "ArrowType",
+                    "from": {
+                      "kind": "ArrowType",
+                      "from": {
+                        "kind": "BoolType"
+                      },
+                      "to": {
+                        "kind": "GenericType",
+                        "name": "a"
+                      }
+                    },
+                    "to": {
+                      "kind": "ArrowType",
+                      "from": {
+                        "kind": "ArrowType",
+                        "from": {
+                          "kind": "FloatType"
+                        },
+                        "to": {
+                          "kind": "GenericType",
+                          "name": "b"
+                        }
+                      },
+                      "to": {
+                        "kind": "GenericType",
+                        "name": "c"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "kind": "Variable",
+                  "name": "y",
+                  "t": {
+                    "kind": "ArrowType",
+                    "from": {
+                      "kind": "BoolType"
+                    },
+                    "to": {
+                      "kind": "GenericType",
+                      "name": "a"
+                    }
+                  }
+                },
+                "t": {
+                  "kind": "ArrowType",
+                  "from": {
+                    "kind": "ArrowType",
+                    "from": {
+                      "kind": "FloatType"
+                    },
+                    "to": {
+                      "kind": "GenericType",
+                      "name": "b"
+                    }
+                  },
+                  "to": {
+                    "kind": "GenericType",
+                    "name": "c"
+                  }
+                }
+              },
+              "right": {
+                "kind": "Variable",
+                "name": "z",
+                "t": {
+                  "kind": "ArrowType",
+                  "from": {
+                    "kind": "FloatType"
+                  },
+                  "to": {
+                    "kind": "GenericType",
+                    "name": "b"
+                  }
+                }
+              },
+              "t": {
+                "kind": "GenericType",
+                "name": "c"
+              }
+            },
+            "right": {
+              "kind": "BoolLiteral",
+              "value": false
+            },
+            "t": {
+              "kind": "GenericType",
+              "name": "c"
+            }
+          },
+          "t": {
+            "kind": "GenericType",
+            "name": "c"
+          }
+        },
+        "t": {
+          "kind": "ArrowType",
+          "from": {
+            "kind": "ArrowType",
+            "from": {
+              "kind": "FloatType"
+            },
+            "to": {
+              "kind": "GenericType",
+              "name": "b"
+            }
+          },
+          "to": {
+            "kind": "GenericType",
+            "name": "c"
+          }
+        }
+      },
+      "t": {
+        "kind": "ArrowType",
+        "from": {
+          "kind": "ArrowType",
+          "from": {
+            "kind": "BoolType"
+          },
+          "to": {
+            "kind": "GenericType",
+            "name": "a"
+          }
+        },
+        "to": {
+          "kind": "ArrowType",
+          "from": {
+            "kind": "ArrowType",
+            "from": {
+              "kind": "FloatType"
+            },
+            "to": {
+              "kind": "GenericType",
+              "name": "b"
+            }
+          },
+          "to": {
+            "kind": "ArrowType",
+            "from": {
+              "kind": "BoolType"
+            },
+            "to": {
+              "kind": "GenericType",
+              "name": "c"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
