@@ -15,24 +15,27 @@ const specs = [
   [/^[a-zA-Z]+/, TokenEnum.Identifier],
   // colon
   [/^:/, TokenEnum.Colon],
+  // arrow
+  [/^->/, TokenEnum.Arrow],
   // space
   [/^\s+/, null],
 ] as const;
 
 
 type TokenizerType = (str: string) => {
-  next: () => Maybe<Token>;
-  getToken: () => Maybe<Token>;
+  next: () => Token;
+  getToken: () => Token;
+  peek: () => Token;
   getTokens: () => Token[];
 }
 
 export type Tokenizer = ReturnType<TokenizerType>;
-
+const TokenEOF: Token = { type: TokenEnum.EOF, value: "" };
 export const tokenizer: TokenizerType = (str) => {
   const _str = str;
   let _cursor = 0;
-  let token: Maybe<Token> = null;
-
+  let token: Token = TokenEOF;
+  next()
   return {
     next,
     getToken,
@@ -42,10 +45,9 @@ export const tokenizer: TokenizerType = (str) => {
 
   function next() {
     if(!_isHasToken()) {
-      token = null
-      return null
+      token = TokenEOF
+      return TokenEOF
     }
-
     const current = _str.slice(_cursor);
     for (const [regex, type] of specs) {
       const matched = _match(current, regex);
@@ -59,7 +61,7 @@ export const tokenizer: TokenizerType = (str) => {
       token = { type, value: matched };
       return token;
     }
-    throw new Error(`unexpected token: ${current}`);
+    throw new Error(`lex error: unexpected token: ${current}`);
   }
 
   // peeks
@@ -76,8 +78,9 @@ export const tokenizer: TokenizerType = (str) => {
   function getTokens() {
     const tokens: Token[] = [];
     let currentToken = next();
-    while(currentToken !== null) {
+    while(true) {
       tokens.push(currentToken);
+      if(currentToken.type === TokenEnum.EOF) break;
       currentToken = next();
     }
     return tokens;
