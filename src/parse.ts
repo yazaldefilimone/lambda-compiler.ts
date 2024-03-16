@@ -1,4 +1,4 @@
-import { Tokenizer } from './tokenizer';
+import { Tokenizer } from 'tokenizer';
 import {
   ProgramType,
   Kind,
@@ -11,7 +11,7 @@ import {
   FunctionType,
   BaseType,
   Maybe,
-} from './types';
+} from 'types';
 
 export type ParserType = (lex: Tokenizer) => ProgramType;
 export type Parser = ReturnType<ParserType>;
@@ -33,7 +33,7 @@ export const parse: ParserType = (lex) => {
     if (current.type !== type) {
       throw new Error(`unexpected token: ${current.value}, expected: ${type}`);
     }
-    current = lex.next();
+    current = lex.scan();
     nextToken = lex.peek();
     return previous;
   }
@@ -45,7 +45,7 @@ export const parse: ParserType = (lex) => {
     return nextToken.type === value;
   }
 
-  function parseStatement(): TermType {
+  function parseTerm(): TermType {
     switch (current.type) {
       case TokenEnum.Lambda:
         return parseAbstraction();
@@ -60,12 +60,12 @@ export const parse: ParserType = (lex) => {
   function parseApplication(): TermType {
     // (x r y...) consume until no more right parens
     eat(TokenEnum.LParen);
-    let term: TermType = parseStatement();
+    let term: TermType = parseTerm();
     while (!isToken(TokenEnum.RParen)) {
       term = {
         kind: Kind.Application,
         left: term,
-        right: parseStatement(),
+        right: parseTerm(),
         t: null,
       };
     }
@@ -77,7 +77,7 @@ export const parse: ParserType = (lex) => {
     eat(TokenEnum.Lambda);
     const variable = parseVariable();
     eat(TokenEnum.Dot);
-    const body = parseStatement();
+    const body = parseTerm();
     return {
       kind: Kind.Abstraction,
       variable,
@@ -148,9 +148,9 @@ export const parse: ParserType = (lex) => {
   }
 
   function program(): ProgramType {
-    const body = [parseStatement()];
+    const body = [parseTerm()];
     while (lex.getToken().type !== TokenEnum.EOF) {
-      body.push(parseStatement());
+      body.push(parseTerm());
     }
     return {
       kind: Kind.Program,
