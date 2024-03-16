@@ -20,17 +20,17 @@ function main() {
     (x y z) False)
   `
 
+const long = `
+${test}
 
+${two}
+
+${three}
+
+${four}
+`
   // const result = tokenizer(four).getTokens();
-  const lex = tokenizer(`
-  ${test}
-
-  ${two}
-
-  ${three}
-
-  ${four}
-  `)
+  const lex = tokenizer(complex)
   // console.log("Simple Lambda Calculus:")
   // console.log(result);
   // console.log("--------------------------------------------------")
