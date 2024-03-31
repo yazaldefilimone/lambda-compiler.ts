@@ -11,6 +11,7 @@ import {
   FunctionType,
   BaseType,
   Maybe,
+  ApplicationType,
 } from 'types';
 
 export type ParserType = (lex: Tokenizer) => ProgramType;
@@ -148,9 +149,9 @@ export const parse: ParserType = (lex) => {
   }
 
   function program(): ProgramType {
-    const body = [parseTerm()];
-    while (lex.getToken().type !== TokenEnum.EOF) {
-      body.push(parseTerm());
+    const body = parseTerm()
+    if(!isToken(TokenEnum.EOF)) {
+      throw new Error('unexpected token: expected EOF, wrapped in parens or not enough parens')
     }
     return {
       kind: Kind.Program,
