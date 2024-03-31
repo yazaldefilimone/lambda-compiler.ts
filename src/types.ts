@@ -51,7 +51,7 @@ export type TermType = VariableType | AbstractionType | ApplicationType;
 
 export type ProgramType = {
   kind: Kind.Program;
-  body: TermType[];
+  body: TermType;
 }
 
 
