@@ -21,8 +21,7 @@ const specs = [
   [/^\s+/, null],
 ] as const;
 
-
-type TokenizerType = (str: string) => {
+type TokenizerType = (str: string, auto_paren?: boolean) => {
   scan: () => Token;
   getToken: () => Token;
   peek: () => Token;
@@ -31,8 +30,8 @@ type TokenizerType = (str: string) => {
 
 export type Tokenizer = ReturnType<TokenizerType>;
 const TokenEOF: Token = { type: TokenEnum.EOF, value: "" };
-export const tokenizer: TokenizerType = (str) => {
-  const _str = str;
+export const tokenizer: TokenizerType = (str, auto_paren = true) => {
+  const _str = _get_str();
   let _cursor = 0;
   let token: Token = TokenEOF;
   next()
@@ -41,6 +40,12 @@ export const tokenizer: TokenizerType = (str) => {
     getToken,
     peek,
     getTokens,
+  }
+  
+  function _get_str() {
+    if(!auto_paren) return str
+    const _str = str.trim()
+    return _str.startsWith("(") && _str.endsWith(")") ? _str : `(${_str})`
   }
 
   function next() {
