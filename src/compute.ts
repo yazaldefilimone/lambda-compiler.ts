@@ -3,10 +3,7 @@ const context = new Map<string, any>();
 type Context = typeof context;
 export function compute(program: ProgramType) {
   function computed() {
-    let text = '';
-    for (let term of program.body) {
-      text += termComputed(term, context);
-    }
+    let text = termComputed(program.body, context);
     return text;
   }
   return {
@@ -21,6 +18,9 @@ function termComputed(term: TermType, context: Context): string {
     case Kind.Abstraction:
       return abstractionComputed(term, context);
     case Kind.Application:
+      if(!term.right){
+        return termComputed(term.left, context);
+      }
       return applicationComputed(term, context);
   }
 }
@@ -57,7 +57,6 @@ function typeComputed(term: Type, context: Context): string {
       text += ')';
       return text;
     }
-     
     case  KindType.Generic:
       return term.value;
   }
