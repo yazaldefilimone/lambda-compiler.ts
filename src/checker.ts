@@ -14,10 +14,7 @@ export const checker: CheckerType = (program) => {
   }
 
   function bind() {
-    const bodyBind:TermType[] = [];
-    for (let term of program.body) {
-      bodyBind.push(bindTerm(term, contextTabeleTypes));
-    }
+    const bodyBind= bindTerm(program.body, contextTabeleTypes)
     return {
       ...program,
       body: bodyBind,
@@ -73,11 +70,11 @@ function bindApplication(term: ApplicationType, context: ContextTabeleTypes): Te
   }
   term.right.t = term.right.t || bindTerm(term.right, context).t as any;
   if(term.left.t.kind !== KindType.Function && term.left.t.kind !== KindType.Generic) {
-    throw new Error('Function application type mismatch');
+    throw new Error(`Expected function type, got ${term.left.t.kind}`)
   }
   if(term.left.t.kind === KindType.Function){
     if(term.left.t.argument.kind !== term.right.t?.kind && term.left.t.argument.kind !== KindType.Generic) {
-      throw new Error('Function application type mismatch');
+      throw new Error(`Expected ${term.left.t.argument.kind}, got ${term.right.t?.kind}`)
     }
     term.t = term.left.t.result;
     return term;
