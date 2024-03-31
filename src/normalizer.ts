@@ -5,99 +5,74 @@ export type NormalizerType = (program: ProgramType) => {
 }
 export type Normalizer = ReturnType<NormalizerType>;
 
+
+
 export const normalizer: NormalizerType = (program) => {
   return {
     normalize,
   };
 
   function normalize() {
-    const bodyNormalize: TermType[] = [];
-    for (let term of program.body) {
-      bodyNormalize.push(termNormalize(term));
-    }
+    const body = reduce(program.body)
     return {
       ...program,
-      body: bodyNormalize,
-    };
+      body,
+    }
   }
 }
 
-function termNormalize(term: TermType): TermType {
+function reduce(term: TermType): TermType {
   switch (term.kind) {
     case Kind.Variable:
-      return variableNormalize(term);
+      return term;
     case Kind.Abstraction:
-      return abstractionNormalize(term);
+      return reduceAbstraction(term);
     case Kind.Application:
-      return applicationNormalize(term);
+      return reduceApplication(term);
   }
 }
+function reduceAbstraction(term: AbstractionType): TermType {
+  term.body = reduce(term.body);
+  return {
+    ...term,
+    body: term.body,
+  };
+}
 
-function variableNormalize(term: VariableType): TermType {
+function reduceApplication(term: ApplicationType): TermType {
+  if(term.left.kind === Kind.Abstraction) {
+    const left_normal = reduce(term.left);
+    const right_normal = reduce(term.right);
+    return reduce(apply(left_normal, right_normal));
+  }
+  term.left = reduce(term.left);
+  term.right = reduce(term.right);
   return term;
 }
 
-function abstractionNormalize(term: AbstractionType): TermType {
-  const normalizedBody = termNormalize(term.body);
-  const clonedType = term.t ? cloneTypeTerm(term.t) as FunctionType: null
-  return {
-    ...term,
-    body: normalizedBody,
-    t: clonedType,
-  };
-}
 
-function applicationNormalize(term: ApplicationType): TermType {
-  const normalizedLeft = termNormalize(term.left);
-  const normalizedRight = termNormalize(term.right);
-
-  if (normalizedLeft.kind === Kind.Abstraction && normalizedRight.t?.kind === KindType.Function) {
-    return substitute(normalizedLeft.body, normalizedLeft.variable.name, normalizedRight);
+function apply(term: TermType, arg: TermType): TermType {
+  if(term.kind === Kind.Abstraction) {
+    return substitute(term.body, term.variable, arg);
   }
-
-  return {
-    ...term,
-    left: normalizedLeft,
-    right: normalizedRight,
-  };
+  return term;
 }
 
-function substitute(term: TermType, variable: string, replacement: TermType): TermType {
+function substitute(term: TermType, variable: VariableType, arg: TermType): TermType {
   switch (term.kind) {
     case Kind.Variable:
-      return term.name === variable ? replacement : term;
+      return term.name === variable.name ? arg : term;
     case Kind.Abstraction:
-      if (term.variable.name === variable) {
-        return term;
-      }
-      const normalizedBody = substitute(term.body, variable, replacement);
       return {
         ...term,
-        body: normalizedBody,
+        body: substitute(term.body, variable, arg),
       };
     case Kind.Application:
-      const substitutedLeft = substitute(term.left, variable, replacement);
-      const substitutedRight = substitute(term.right, variable, replacement);
       return {
         ...term,
-        left: substitutedLeft,
-        right: substitutedRight,
+        left: substitute(term.left, variable, arg),
+        right: substitute(term.right, variable, arg),
       };
   }
 }
 
-function cloneTypeTerm(term: Type): Type {
-  switch (term.kind) {
-    case KindType.Int:
-    case KindType.Bool:
-    case KindType.Float:
-    case KindType.Generic:
-      return term;
-    case KindType.Function:
-      return {
-        kind: KindType.Function,
-        argument: cloneTypeTerm(term.argument),
-        result: cloneTypeTerm(term.result),
-      };
-  }
-}
