@@ -8,7 +8,7 @@ function main() {
   const test = `λx. (x x) λx. (x x)` // !todo fix this (prevent infinite loop)
   const lam = `(λf.λx.(f (f x)) λg.λy.(g (g y)))`
   const lam_type = `(λf:((a->a)->a->a).λg:(a->a).λy:a.(g (g y)))`
-  const lex = tokenizer(test)
+  const lex = tokenizer(lam)
   const program = parse(lex);
   const checked = checker(program).bind();
   const normalized = normalizer(checked).normalize();
