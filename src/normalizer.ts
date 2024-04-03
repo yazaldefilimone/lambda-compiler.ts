@@ -41,6 +41,9 @@ function reduceAbstraction(term: AbstractionType): TermType {
 
 function reduceApplication(term: ApplicationType): TermType {
   if(term.left.kind === Kind.Abstraction) {
+    if(isInfiniteLoop(term.left, term.right)) {
+      return term.right
+    }
     const left_normal = reduce(term.left);
     const right_normal = reduce(term.right);
     return reduce(apply(left_normal, right_normal));
@@ -48,6 +51,25 @@ function reduceApplication(term: ApplicationType): TermType {
   term.left = reduce(term.left);
   term.right = reduce(term.right);
   return term;
+}
+
+
+function isInfiniteLoop(left: TermType, right: TermType): boolean {
+  if(left.kind === Kind.Abstraction && right.kind === Kind.Abstraction) {
+    if(left.variable.name !== right.variable.name) {
+      return false
+    }
+  
+    if(left.t?.kind !== undefined && left.t.kind !== right.t?.kind) {
+      return false
+    }
+
+    if(left.t?.result.kind !== undefined && left.t.result.kind !== right.t?.result.kind) {
+      return false
+    }
+    return true
+  }
+  return false
 }
 
 
